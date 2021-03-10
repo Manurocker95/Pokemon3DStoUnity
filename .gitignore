@@ -4,6 +4,7 @@
 #
 /[Bb]in3DS/
 /[Ee]xported/
+/[Aa]mplifyShaderEditor/
 
 # Visual Studio cache directory
 .vs/
