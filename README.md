@@ -1,11 +1,13 @@
 ![chx](https://user-images.githubusercontent.com/3764951/110683736-5b67b200-8202-11eb-8801-1ba969f6714c.gif)
 
+Note:
+This is a fork of Opeious work, so this is meant only for adding functionalities. 
 
 Installation:
 -
 - Note: This plugin only works with the Universal Render Pipeline at the moment.
 - If you have a git account, add this project as a dependency in `Packages/manifest.json` in the root your your project
-`"com.opeious.pokemon3dstounity": "https://github.com/opeious/Pokemon3DStoUnity.git",`
+`"com.Manurocker95.pokemon3dstounity": "https://github.com/Manurocker95/Pokemon3DStoUnity.git",`
 
 - If you don't have git setup, download and put the entire project into your Assets Folder
 
