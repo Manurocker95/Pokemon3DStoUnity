@@ -1,17 +1,17 @@
 {
-    "name": "com.opeious.pokemon3dstounity",
+    "name": "com.manurocker95.pokemon3dstounity",
     "displayName": "Pokemon 3DS to Unity",
-    "version": "1.6.0",
+    "version": "2.2.0",
     "unity": "2019.4",
-    "description": "Directly import Pokemon Binary files into Unity",
+    "description": "Directly import Pokemon Binary files into Unity. It's an updated version of Opeious' work.",
     "keywords": [
         "pokemon",
         "3ds",
         "unity"
     ],
     "author:": {
-    	"name": "Opeious",
-    	"url": "https://github.com/opeious/"
+    	"name": "Manurocker95",
+    	"url": "https://github.com/Manurocker95/"
     },
     "category": "Unity"
 }
