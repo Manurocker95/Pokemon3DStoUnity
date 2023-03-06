@@ -55,7 +55,6 @@ namespace P3DS2U.Editor
         
         public static void StartImportingBinaries (P3ds2USettingsScriptableObject importSettings, Dictionary<string, List<string>> scenesDict)
         {
-            try {
                 string ExportPath = importSettings.ExportPath;
                 AnimationImportOptions.Add(importSettings.ImporterSettings.FightAnimationsToImport);
                 AnimationImportOptions.Add(importSettings.ImporterSettings.PetAnimationsToImport);
@@ -63,108 +62,110 @@ namespace P3DS2U.Editor
                 _processedCount = 0;
                 for (int i = importSettings.ImporterSettings.StartIndex; i <= importSettings.ImporterSettings.EndIndex; i++)
                 {
-                    var kvp = scenesDict.ElementAt(i);
-                    EditorUtility.ClearProgressBar ();
-                    EditorUtility.DisplayProgressBar ("Importing", kvp.Key.Replace (".bin", ""),
-                        (float) _processedCount / scenesDict.Count);
+                    try
+                    {
+                        var kvp = scenesDict.ElementAt(i);
+                        EditorUtility.ClearProgressBar ();
+                        EditorUtility.DisplayProgressBar ("Importing", kvp.Key.Replace (".bin", ""),
+                            (float) _processedCount / scenesDict.Count);
 
-                    h3DScene = new H3D ();
+                        h3DScene = new H3D ();
 
-                    //Add all non-animation binaries first
-                    foreach (var singleFileToBeMerged in kvp.Value) {
-                        var fileType = BinaryUtils.GetBinaryFileType (singleFileToBeMerged);
-                        if (fileType == BinaryUtils.FileType.Animation) continue;
-                        H3DDict<H3DBone> skeleton = null;
-                        if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
-                        var data = FormatIdentifier.IdentifyAndOpen (singleFileToBeMerged, skeleton);
-                        if (data != null) h3DScene.Merge (data);
-                    }
-
-                    int animFilesCount = 0;
-                    //Merge animation binaries
-                    foreach (var singleFileToBeMerged in kvp.Value) {
-                        var fileType = BinaryUtils.GetBinaryFileType (singleFileToBeMerged);
-                        if (fileType != BinaryUtils.FileType.Animation) continue;
-                        H3DDict<H3DBone> skeleton = null;
-                        if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
-                        var data = FormatIdentifier.IdentifyAndOpen (singleFileToBeMerged, skeleton, animFilesCount);
-                        animFilesCount++;
-                        if (data != null) h3DScene.Merge (data);
-                    }
-
-                    var combinedExportFolder = ExportPath + kvp.Key.Replace (".bin", "") + "/Files/";
-                    if (!Directory.Exists (combinedExportFolder)) {
-                        Directory.CreateDirectory (combinedExportFolder);
-                    } else {
-                        Directory.Delete (ExportPath + kvp.Key.Replace (".bin", "") + "/", true);
-                        Directory.CreateDirectory (combinedExportFolder);
-                    }
-
-                    if (importSettings.ImporterSettings.ImportTextures) {
-                        GenerateTextureFiles (h3DScene, combinedExportFolder);   
-                    }
-
-                    var meshDict = new Dictionary<string, SkinnedMeshRenderer> ();
-                    if (importSettings.ImporterSettings.ImportModel) {
-                        try {
-                            meshDict = GenerateMeshInUnityScene (h3DScene, combinedExportFolder, importSettings);
+                        //Add all non-animation binaries first
+                        foreach (var singleFileToBeMerged in kvp.Value) {
+                            var fileType = BinaryUtils.GetBinaryFileType (singleFileToBeMerged);
+                            if (fileType == BinaryUtils.FileType.Animation) continue;
+                            H3DDict<H3DBone> skeleton = null;
+                            if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
+                            var data = FormatIdentifier.IdentifyAndOpen (singleFileToBeMerged, skeleton);
+                            if (data != null) h3DScene.Merge (data);
                         }
-                        catch (Exception e) {
-                            Debug.LogError (
-                                "Check your settings! Are you sure, you are using the correct input format, is each pokemon's binaries in a separate folder?\n" +
-                                e.Message + "\n" + e.StackTrace);
+
+                        int animFilesCount = 0;
+                        //Merge animation binaries
+                        foreach (var singleFileToBeMerged in kvp.Value) {
+                            var fileType = BinaryUtils.GetBinaryFileType (singleFileToBeMerged);
+                            if (fileType != BinaryUtils.FileType.Animation) continue;
+                            H3DDict<H3DBone> skeleton = null;
+                            if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
+                            var data = FormatIdentifier.IdentifyAndOpen (singleFileToBeMerged, skeleton, animFilesCount);
+                            animFilesCount++;
+                            if (data != null) h3DScene.Merge (data);
                         }
-                    }
 
-                    var matDict = new Dictionary<string, Material> ();
-                    if (importSettings.ImporterSettings.ImportMaterials) {
-                        matDict = GenerateMaterialFiles (h3DScene, combinedExportFolder, importSettings.customShaderSettings);   
-                    }
+                        var combinedExportFolder = ExportPath + kvp.Key.Replace (".bin", "") + "/Files/";
+                        if (!Directory.Exists (combinedExportFolder)) {
+                            Directory.CreateDirectory (combinedExportFolder);
+                        } else {
+                            Directory.Delete (ExportPath + kvp.Key.Replace (".bin", "") + "/", true);
+                            Directory.CreateDirectory (combinedExportFolder);
+                        }
 
-                    if (importSettings.ImporterSettings.ApplyMaterials) {
-                        AddMaterialsToGeneratedMeshes (meshDict, matDict, h3DScene);   
-                    }
+                        if (importSettings.ImporterSettings.ImportTextures) {
+                            GenerateTextureFiles (h3DScene, combinedExportFolder);   
+                        }
 
-                    if (importSettings.ImporterSettings.SkeletalAnimations) {
-                        GenerateSkeletalAnimations (h3DScene, combinedExportFolder);
-                    }
-                    
-                    if (importSettings.ImporterSettings.VisibilityAnimations) {
-                        GenerateVisibilityAnimations (h3DScene, combinedExportFolder);
-                    }
+                        var meshDict = new Dictionary<string, SkinnedMeshRenderer> ();
+                        if (importSettings.ImporterSettings.ImportModel) {
+                            try {
+                                meshDict = GenerateMeshInUnityScene (h3DScene, combinedExportFolder, importSettings);
+                            }
+                            catch (Exception e) {
+                                Debug.LogError (
+                                    "Check your settings! Are you sure, you are using the correct input format, is each pokemon's binaries in a separate folder?\n" +
+                                    e.Message + "\n" + e.StackTrace);
+                            }
+                        }
 
-                    if (importSettings.ImporterSettings.MaterialAnimations) {
-                        GenerateMaterialAnimations (h3DScene, combinedExportFolder, importSettings);   
-                    }
+                        var matDict = new Dictionary<string, Material> ();
+                        if (importSettings.ImporterSettings.ImportMaterials) {
+                            matDict = GenerateMaterialFiles (h3DScene, combinedExportFolder, importSettings.customShaderSettings);   
+                        }
 
-                    var modelGo = GameObject.Find ("GeneratedUnityObject");
-                    if (modelGo != null) {
-                        var modelName = kvp.Key.Replace (".bin", "");
+                        if (importSettings.ImporterSettings.ApplyMaterials) {
+                            AddMaterialsToGeneratedMeshes (meshDict, matDict, h3DScene);   
+                        }
+
                         if (importSettings.ImporterSettings.SkeletalAnimations) {
-                            GenerateAnimationController (modelGo, combinedExportFolder, modelName);
+                            GenerateSkeletalAnimations (h3DScene, combinedExportFolder);
                         }
-                        
-                        var go = new GameObject ("GeneratedUnityObject");
-                        modelGo.transform.SetParent (go.transform);
-                        modelGo.name = "Model";
-                        
-                        go.name = modelName + " (Container)";
-                        var prefabPath =
-                            AssetDatabase.GenerateUniqueAssetPath (ExportPath + kvp.Key.Replace (".bin", "") + "/" + kvp.Key.Replace (".bin", "") + ".prefab");
-                        PrefabUtility.SaveAsPrefabAssetAndConnect (go, prefabPath, InteractionMode.UserAction);
+                    
+                        if (importSettings.ImporterSettings.VisibilityAnimations) {
+                            GenerateVisibilityAnimations (h3DScene, combinedExportFolder);
+                        }
 
-                        go.transform.localPosition = new Vector3 {
-                            x = Random.Range (-100f, 100f),
-                            y = 0,
-                            z = Random.Range (-100f, 100f)
-                        };   
+                        if (importSettings.ImporterSettings.MaterialAnimations) {
+                            GenerateMaterialAnimations (h3DScene, combinedExportFolder, importSettings);   
+                        }
+
+                        var modelGo = GameObject.Find ("GeneratedUnityObject");
+                        if (modelGo != null) {
+                            var modelName = kvp.Key.Replace (".bin", "");
+                            if (importSettings.ImporterSettings.SkeletalAnimations) {
+                                GenerateAnimationController (modelGo, combinedExportFolder, modelName);
+                            }
+                        
+                            var go = new GameObject ("GeneratedUnityObject");
+                            modelGo.transform.SetParent (go.transform);
+                            modelGo.name = "Model";
+                        
+                            go.name = modelName + " (Container)";
+                            var prefabPath =
+                                AssetDatabase.GenerateUniqueAssetPath (ExportPath + kvp.Key.Replace (".bin", "") + "/" + kvp.Key.Replace (".bin", "") + ".prefab");
+                            PrefabUtility.SaveAsPrefabAssetAndConnect (go, prefabPath, InteractionMode.UserAction);
+
+                            go.transform.localPosition = new Vector3 {
+                                x = Random.Range (-100f, 100f),
+                                y = 0,
+                                z = Random.Range (-100f, 100f)
+                            };   
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("Something went horribly wrong! Hmu, I'll try to fix it.\n" + e.Message + "\n" + e.StackTrace);
                     }
                 }
-            }
-            catch (Exception e) {
-                Debug.LogError ("Something went horribly wrong! Hmu, I'll try to fix it.\n" + e.Message + "\n" +
-                                e.StackTrace);
-            }
 
             EditorUtility.ClearProgressBar();
         }
