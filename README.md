@@ -1,15 +1,23 @@
 ![chx](https://user-images.githubusercontent.com/3764951/110683736-5b67b200-8202-11eb-8801-1ba969f6714c.gif)
 
+<<<<<<< Updated upstream
+Compatibility:
+-
+- https://docs.google.com/spreadsheets/d/1-3NI6vUMltge9d57bbdNkJ9jBEYdKAf59i2BfbgTiGs/edit#gid=1937181896
+=======
 Note:
 This is a fork of Opeious work, so this is meant only for adding functionalities. 
+The whack runtime version requires 
+>>>>>>> Stashed changes
 
 Installation:
 -
 - Note: This plugin only works with the Universal Render Pipeline at the moment.
 - If you have a git account, add this project as a dependency in `Packages/manifest.json` in the root your your project
-`"com.Manurocker95.pokemon3dstounity": "https://github.com/Manurocker95/Pokemon3DStoUnity.git",`
+`"com.opeious.pokemon3dstounity": "https://github.com/opeious/Pokemon3DStoUnity.git",`
 
 - If you don't have git setup, download and put the entire project into your Assets Folder
+- Note that the whacky version requires net. 4.x. Remember to set it in Edit > Project Settings
 
 Usage:
 -
@@ -19,6 +27,18 @@ Usage:
 - Place your 3DS files in `Assets/Bin3DS` that would've been created
 - Hit import again
 - Exported files and prefabs get added to  `Assets/Exported`
+
+For a step-by-step guide / more info: https://gbatemp.net/threads/tutorial-export-your-pokemon-animated-models-from-3ds-to-unity-engine-3d.532962/ 
+
+Troubleshooting:
+-
+If you face any issues or just looking for a community of likeminded developers:  https://discord.gg/pYBWwAa (Discord Server)
+
+Contributions:
+-
+If you would like to contribute to this project, I would recommend going through the TODOs at the top of `PokemonImporter.cs` in the `main` branch:
+https://github.com/opeious/Pokemon3DStoUnity/blob/main/Editor/PokemonImporter.cs
+
 
 Settings to change for Fire to work:
 -
@@ -47,17 +67,16 @@ What does the package do at the moment:
 - Saves the translated mon as prefab
 - Supports bulk processing
 
-To do:
--
-- Expose Material animations for custom shaders
-- AssetBundles/Addressable build sizeoptimizations
-
 Updating:
 -
 - Unity package manager doesn't currently support version of git packages, for now just remove the project as a dependency and add it again
 
 ChangeLog:
 -
+- v2.1: Ability to override animation controller during import, List<uint> fix (2019.1 and below)
+- v2.0: Added option to generate and apply shiny materials
+- v1.9: Fix (Changed parser to allow reading of Binaries that are set to read only.)
+- v1.8: Fixes, delete settings to regenerate defaults, custom shader support for material animations
 - v1.7: Fire Shader
 - v1.6: Full material / vis animation support, bunch of fixes related to animations and skipping corrupt files etc.
 - v1.5: Added Visiblity animations, fixed iris/body shaders, Material aniamtions (preview)

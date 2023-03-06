@@ -1,0 +1,20 @@
+{
+    "name": "Pokemon3DS2Unity.Editor",
+    "rootNamespace": "P3DS2U.Editor",
+    "references": [
+        "Pokemon3DStoUnity",
+        "Pokemon3DStoUnity.Editor.SPICA",
+        "Pokemon3DS2Unity.Common"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

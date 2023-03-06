@@ -1,0 +1,16 @@
+{
+    "name": "Pokemon3DS2Unity.Common",
+    "rootNamespace": "P3DS2U",
+    "references": [
+        "SFB"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
