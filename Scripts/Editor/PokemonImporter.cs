@@ -82,7 +82,7 @@ namespace P3DS2U.Editor
                     foreach (var singleFileToBeMerged in kvp.Value)
                     {
                         var fileType = BinaryUtils.GetBinaryFileType(singleFileToBeMerged);
-                        if (fileType == BinaryUtils.FileType.Animation) continue;
+                        if (fileType == BinaryUtils.FileType.Animation || fileType == BinaryUtils.FileType.Undefined) continue;
                         H3DDict<H3DBone> skeleton = null;
                         if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
                         var data = FormatIdentifier.IdentifyAndOpen(singleFileToBeMerged, skeleton);
@@ -94,7 +94,7 @@ namespace P3DS2U.Editor
                     foreach (var singleFileToBeMerged in kvp.Value)
                     {
                         var fileType = BinaryUtils.GetBinaryFileType(singleFileToBeMerged);
-                        if (fileType != BinaryUtils.FileType.Animation) continue;
+                        if (fileType != BinaryUtils.FileType.Animation|| fileType == BinaryUtils.FileType.Undefined) continue;
                         H3DDict<H3DBone> skeleton = null;
                         if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
                         var data = FormatIdentifier.IdentifyAndOpen(singleFileToBeMerged, skeleton, animFilesCount);

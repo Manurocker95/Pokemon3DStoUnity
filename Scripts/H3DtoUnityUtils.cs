@@ -59,7 +59,7 @@ namespace P3DS2U
                             }
                             catch (Exception e)
                             {
-                                Debug.LogError("Error: " + e.Message + ": "+e.StackTrace);
+                                Debug.LogError("Error in binary "+" " +fileName+" : "+ e.Message + ": "+e.StackTrace);
                                 return FileType.Undefined;
                             }
 

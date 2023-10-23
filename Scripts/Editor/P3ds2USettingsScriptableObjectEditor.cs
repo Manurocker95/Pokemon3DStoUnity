@@ -70,6 +70,15 @@ namespace P3DS2U.Editor
                 }
                 if (GUILayout.Button("Refresh", GUILayout.Width(100), GUILayout.Height(50)))
                 {
+                    if (P3DS2UConfig.NeedToImportFunc == null)
+                    {
+                        P3DS2UConfig.NeedToImportFunc = PokemonImporter.NeedToImportAnimation;
+                    }
+
+                    if (P3DS2UConfig.StartImportingBinariesEvent == null)
+                    {
+                        P3DS2UConfig.StartImportingBinariesEvent = PokemonImporter.StartImportingBinaries;
+                    }
                     settingsTarget.RegeneratePreview();
                 }
                 GUILayout.Label("If you are not sure what settings to use, try the defaults!", GUILayout.ExpandWidth(true));
