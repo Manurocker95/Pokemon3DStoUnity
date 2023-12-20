@@ -279,6 +279,9 @@ namespace P3DS2U
                 MovementAnimationsToImport = new AnimationImportOptions(),
                 ExportPath = P3DS2UConfig.ExportPath,
                 ImportPath = P3DS2UConfig.ImportPath,
+                ExportGLTFPath = P3DS2UConfig.GLTFExportPath,
+                ExportGLB = true,
+                ExportGLTF = false
             };
             foreach (string animationName in AnimationNaming.animationNames["Fight"])
             {
