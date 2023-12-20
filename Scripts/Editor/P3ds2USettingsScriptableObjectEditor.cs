@@ -84,7 +84,7 @@ namespace P3DS2U.Editor
                     CheckFolders(wti);
                     settingsTarget.StartImporting();
                 }
-                if (GUILayout.Button("Import & Export", GUILayout.Width(200), GUILayout.Height(50)))
+                if (GUILayout.Button("Import & Export as GLTF", GUILayout.Width(200), GUILayout.Height(50)))
                 {
                     CheckFolders(wti);
                     settingsTarget.StartImporting(true);

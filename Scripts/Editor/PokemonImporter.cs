@@ -213,13 +213,9 @@ namespace P3DS2U.Editor
 
                                     if (!success)
                                     {
-                                        Debug.LogError("Something went wrong exporting a glTF");
+                                        Debug.LogError("Something went wrong exporting"+ gltfName+" as glb at "+ gltfPath);
                                     }
-                                    else
-                                    {
-                                        Debug.Log(gltfName + " was exported to " + gltfPath);
-                                    }
-                                });
+                                }, importSettings.ImporterSettings.OpenFolderAfterGLTFExport);
                             }
 
                             if (importSettings.ImporterSettings.ExportGLTF)
@@ -230,13 +226,9 @@ namespace P3DS2U.Editor
 
                                     if (!success)
                                     {
-                                        Debug.LogError("Something went wrong exporting a glTF");
+                                        Debug.LogError("Something went wrong exporting" + gltfName + " as glTF at " + gltfPath);
                                     }
-                                    else
-                                    {
-                                        Debug.Log(gltfName + " was exported to " + gltfPath);
-                                    }
-                                });
+                                }, importSettings.ImporterSettings.OpenFolderAfterGLTFExport);
                             }
 
                         }
@@ -269,14 +261,9 @@ namespace P3DS2U.Editor
                 if (trimmedPath.Equals(path))
                 {
                     T asset = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(assetPath);
-                    if (_log)
-                        Debug.Log(trimmedPath);
-
+     
                     if (asset != null)
                     {
-                        if (_log)
-                            Debug.Log("yes");
-
                         assets.Add(asset);
                     }
                 }
@@ -305,7 +292,7 @@ namespace P3DS2U.Editor
             return path.Substring(index, path.Length - index);
         }
 
-        static void ExportGO(bool binary, string combinedFolder, string exportPath,  string name, GameObject gameObject, UnityAction<bool> _callback)
+        static void ExportGO(bool binary, string combinedFolder, string exportPath,  string name, GameObject gameObject, UnityAction<bool> _callback, bool _openFolder = false)
         {
             if (!System.IO.Directory.Exists(exportPath))
             {
@@ -315,7 +302,7 @@ namespace P3DS2U.Editor
             Export(binary, exportPath, name, new GameObject[] { gameObject }, _callback);
         }
 
-        static void Export(bool binary, string exportPath, string name, GameObject[] gameObjects, UnityAction<bool> _callback)
+        static void Export(bool binary, string exportPath, string name, GameObject[] gameObjects, UnityAction<bool> _callback, bool _openFolder = false)
         {
             var extension = binary ? "glb" : "gltf";
 
@@ -338,8 +325,8 @@ namespace P3DS2U.Editor
                 else
                     exporter.SaveGLTFandBin(path, name);
 
-                Debug.Log("Exported to " + resultFile);
-                EditorUtility.RevealInFinder(resultFile);
+                if (_openFolder)
+                    EditorUtility.RevealInFinder(resultFile);
                 _callback?.Invoke(true);
                 return;
             }

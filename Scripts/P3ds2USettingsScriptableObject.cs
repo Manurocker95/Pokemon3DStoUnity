@@ -178,6 +178,7 @@ namespace P3DS2U
       public bool ImportFireMaterials;
       public bool ExportGLB;
       public bool ExportGLTF;
+      public bool OpenFolderAfterGLTFExport;
       
       public bool SkeletalAnimations;
       public AnimationImportOptions FightAnimationsToImport;
@@ -281,7 +282,8 @@ namespace P3DS2U
                 ImportPath = P3DS2UConfig.ImportPath,
                 ExportGLTFPath = P3DS2UConfig.GLTFExportPath,
                 ExportGLB = true,
-                ExportGLTF = false
+                ExportGLTF = false,
+                OpenFolderAfterGLTFExport = false
             };
             foreach (string animationName in AnimationNaming.animationNames["Fight"])
             {
