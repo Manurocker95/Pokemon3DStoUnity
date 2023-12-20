@@ -5,7 +5,7 @@ Compatibility:
 
 Note:
 This is a fork of Opeious work, so this is meant only for adding functionalities. 
-The whack runtime version requires 
+The whack runtime version requires NET 4.x so NET Framework must be selected under Edit > Project Settings > Player 
 
 Installation:
 -
