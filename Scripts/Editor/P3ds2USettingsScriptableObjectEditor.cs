@@ -46,6 +46,15 @@ namespace P3DS2U.Editor
 
                 GUILayout.Label("Export path: " + wti.ExportPath);
                 EditorGUILayout.EndHorizontal();
+                EditorGUILayout.Space();
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("...", GUILayout.Width(50), GUILayout.Width(50)))
+                {
+                    settingsTarget.SetGLTFExportPath();
+                }
+
+                GUILayout.Label("GLTF Export path: " + wti.ExportGLTFPath);
+                EditorGUILayout.EndHorizontal();
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.BeginVertical();
                 if (GUILayout.Button("Reset Path", GUILayout.Width(200), GUILayout.Width(150)))
@@ -56,6 +65,11 @@ namespace P3DS2U.Editor
                 if (GUILayout.Button("Reset Path", GUILayout.Width(200), GUILayout.Width(150)))
                 {
                     settingsTarget.ResetPaths(1);
+                }       
+                EditorGUILayout.Space();
+                if (GUILayout.Button("Reset Path", GUILayout.Width(200), GUILayout.Width(150)))
+                {
+                    settingsTarget.ResetPaths(2);
                 }
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.EndHorizontal();
@@ -67,15 +81,18 @@ namespace P3DS2U.Editor
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Import", GUILayout.Width(100), GUILayout.Height(50)))
                 {
+                    CheckFolders(wti);
                     settingsTarget.StartImporting();
                 }
                 if (GUILayout.Button("Import & Export", GUILayout.Width(200), GUILayout.Height(50)))
                 {
+                    CheckFolders(wti);
                     settingsTarget.StartImporting(true);
                 }
                 EditorGUILayout.EndHorizontal();
                 if (GUILayout.Button("Refresh", GUILayout.Width(100), GUILayout.Height(50)))
                 {
+                    CheckFolders(wti);
                     if (P3DS2UConfig.NeedToImportFunc == null)
                     {
                         P3DS2UConfig.NeedToImportFunc = PokemonImporter.NeedToImportAnimation;
@@ -162,6 +179,23 @@ namespace P3DS2U.Editor
             GUILayout.ExpandWidth(true);
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void CheckFolders(WhatToImport wti)
+        {
+            if (wti != null)
+            {
+                if (!string.IsNullOrEmpty(wti.ExportGLTFPath) && !System.IO.Directory.Exists(wti.ExportGLTFPath))
+                    System.IO.Directory.CreateDirectory(wti.ExportGLTFPath);
+
+                if (!string.IsNullOrEmpty(wti.ImportPath) && !System.IO.Directory.Exists(wti.ImportPath))
+                    System.IO.Directory.CreateDirectory(wti.ImportPath);
+
+                if (!string.IsNullOrEmpty(wti.ExportPath) && !System.IO.Directory.Exists(wti.ExportPath))
+                    System.IO.Directory.CreateDirectory(wti.ExportPath);
+
+                AssetDatabase.Refresh();
+            }
         }
     }
 }

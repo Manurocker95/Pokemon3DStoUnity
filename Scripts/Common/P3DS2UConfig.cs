@@ -10,6 +10,7 @@ namespace P3DS2U
     {
         public const string ImportPath = "Assets/Bin3DS/";
         public const string ExportPath = "Assets/Exported/";
+        public const string GLTFExportPath = "Assets/Exported_GLTF/";
 
         public static Func<int, string, bool> NeedToImportFunc;
         public static Func<bool> RenameGeneratedAnimationFilesFunc;

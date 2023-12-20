@@ -190,11 +190,12 @@ namespace P3DS2U
       public bool RenameGeneratedAnimationFiles;
       [HideInInspector] public string ExportPath;
       [HideInInspector] public string ImportPath;
+      [HideInInspector] public string ExportGLTFPath;
    }
    
    public class P3ds2USettingsScriptableObject : P3ds2USettingsScriptableObjectBase
     {
-      [HideInInspector] public string PackageVersion = "";
+      [HideInInspector] public string packageVersion = "";
 
          private bool _generated;
       [SerializeField] public WhatToImport ImporterSettings;
@@ -207,17 +208,37 @@ namespace P3DS2U
 
       public static P3ds2USettingsScriptableObject Instance;
 
+
       [HideInInspector] public int chosenFormat; // 0 or 1
       public static bool ImportInProgress;
       
         public string ExportPath { get { return ImporterSettings.ExportPath; } }
+        public string GLTFExportPath { get { return ImporterSettings.ExportGLTFPath; } }
         public string ImportPath { get { return ImporterSettings.ImportPath; } }
         public bool GetRenameGeneratedAnimationFiles() { return ImporterSettings.RenameGeneratedAnimationFiles; }
+
+        public string PackageVersion => string.IsNullOrEmpty(packageVersion) ? "2.5.0" : packageVersion;
 
         [Serializable]
         public class PackageJsonObject
         {
+           public string name;
+           public string displayName;
            public string version;
+           public string unity;
+           public string description;
+           public List<string> keywords;
+           public Author originalAuthor;
+           public Author author;
+           public string category;
+            
+            [Serializable]
+            public class Author
+            {
+                public string name;
+                public string url;
+            }
+            
         }
         
       private P3ds2USettingsScriptableObject ()
@@ -225,9 +246,10 @@ namespace P3DS2U
          try {
             var packageJsonObject =
                JsonUtility.FromJson<PackageJsonObject> (File.ReadAllText (Application.dataPath+ "/Pokemon3DStoUnity/package.json"));
-            PackageVersion = packageJsonObject.version;
+            packageVersion = packageJsonObject.version;
          }
          catch (Exception) {
+                packageVersion = "2.5.0"; 
             //ignored
          }
             Instance = this;
@@ -319,9 +341,13 @@ namespace P3DS2U
                 case 1:
                     ImporterSettings.ExportPath = P3DS2UConfig.ExportPath;
                     break;
+                case 2:
+                    ImporterSettings.ExportGLTFPath = P3DS2UConfig.GLTFExportPath;
+                    break;
                 default:
                     ImporterSettings.ImportPath = P3DS2UConfig.ImportPath;
                     ImporterSettings.ExportPath = P3DS2UConfig.ExportPath;
+                    ImporterSettings.ExportGLTFPath = P3DS2UConfig.GLTFExportPath;
                     break;
             }
         }
@@ -340,7 +366,21 @@ namespace P3DS2U
             ImporterSettings.ExportPath = path;
         }
 
-      public void RegeneratePreview ()
+        public void SetGLTFExportPath()
+        {
+            string path = P3DS2UConfig.SaveFolderPanel("Choose GLTF Export folder", "Assets/", "Exported");
+            if (!string.IsNullOrEmpty(path))
+            {
+                SetGLTFExportPath("Assets" + path.Replace(Application.dataPath + "/", "/") + "/");
+            }
+        }
+
+        public void SetGLTFExportPath(string path)
+        {
+            ImporterSettings.ExportGLTFPath = path;
+        }
+
+        public void RegeneratePreview ()
       {
          if (ImportInProgress) 
                 return;

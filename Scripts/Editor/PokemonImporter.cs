@@ -202,7 +202,8 @@ namespace P3DS2U.Editor
                         go.transform.localScale = new Vector3(scale, scale, scale);
                         if (_export)
                         {
-                            var gltfPath = ExportPath + "GLTF/"+ modelName+"/";
+                            string GLTFExportPath = string.IsNullOrEmpty(importSettings.GLTFExportPath) ? ExportPath : importSettings.GLTFExportPath;
+                            var gltfPath = GLTFExportPath + modelName+"/";
                             string gltfName = modelName;
                             if (importSettings.ImporterSettings.ExportGLB)
                             {
