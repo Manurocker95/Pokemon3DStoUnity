@@ -1,17 +1,21 @@
 {
-    "name": "com.opeious.pokemon3dstounity",
-    "displayName": "Pokemon 3DS to Unity",
-    "version": "2.1.0",
-    "unity": "2019.4",
-    "description": "Directly import Pokemon Binary files into Unity",
-    "keywords": [
-        "pokemon",
-        "3ds",
-        "unity"
-    ],
-    "author:": {
-    	"name": "Opeious",
-    	"url": "https://github.com/opeious/"
-    },
-    "category": "Unity"
+  "name": "com.Manurocker95.pokemon3dstounity",
+  "displayName": "Pokemon 3DS to Unity",
+  "version": "2.5.0",
+  "unity": "2021.3",
+  "description": "Directly import Pokemon Binary files into Unity and export them as GLTF or GLB",
+  "keywords": [
+    "pokemon",
+    "3ds",
+    "unity"
+  ],
+  "originalauthor:": {
+    "name": "Opeious",
+    "url": "https://github.com/opeious/"
+  },
+  "author:": {
+    "name": "Manurocker95",
+    "url": "https://github.com/Manurocker95/"
+  },
+  "category": "Unity"
 }

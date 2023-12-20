@@ -224,7 +224,7 @@ namespace P3DS2U
       {
          try {
             var packageJsonObject =
-               JsonUtility.FromJson<PackageJsonObject> (File.ReadAllText ("Assets/3dsToUnity/package.json"));
+               JsonUtility.FromJson<PackageJsonObject> (File.ReadAllText (Application.dataPath+ "/Pokemon3DStoUnity/package.json"));
             PackageVersion = packageJsonObject.version;
          }
          catch (Exception) {
