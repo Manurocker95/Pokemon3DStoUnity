@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -29,7 +30,17 @@ namespace P3DS2U
 
             return items[0].Name;
 #else
+#if UNITY_EDITOR
+            string filePath = EditorUtility.SaveFolderPanel(title, defaultPath, folderName);
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return defaultPath;
+            }
+
+            return filePath;
+#else
             return defaultPath;
+#endif
 #endif
         }
     }
