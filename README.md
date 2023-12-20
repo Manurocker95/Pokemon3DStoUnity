@@ -71,7 +71,7 @@ Updating:
 - Unity package manager doesn't currently support version of git packages, for now just remove the project as a dependency and add it again
 
 ChangeLog:
--
+- 2.2-2.5: support for automatized exporter with UnityGLTF dev branch and some refactorization. NET 4.x is now mandatory as I use reflection for future runtime app.
 - v2.1: Ability to override animation controller during import, List<uint> fix (2019.1 and below)
 - v2.0: Added option to generate and apply shiny materials
 - v1.9: Fix (Changed parser to allow reading of Binaries that are set to read only.)
