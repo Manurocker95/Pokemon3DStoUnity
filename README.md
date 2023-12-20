@@ -1,20 +1,17 @@
 ![chx](https://user-images.githubusercontent.com/3764951/110683736-5b67b200-8202-11eb-8801-1ba969f6714c.gif)
 
-<<<<<<< Updated upstream
 Compatibility:
--
 - https://docs.google.com/spreadsheets/d/1-3NI6vUMltge9d57bbdNkJ9jBEYdKAf59i2BfbgTiGs/edit#gid=1937181896
-=======
+
 Note:
 This is a fork of Opeious work, so this is meant only for adding functionalities. 
 The whack runtime version requires 
->>>>>>> Stashed changes
 
 Installation:
 -
 - Note: This plugin only works with the Universal Render Pipeline at the moment.
 - If you have a git account, add this project as a dependency in `Packages/manifest.json` in the root your your project
-`"com.opeious.pokemon3dstounity": "https://github.com/opeious/Pokemon3DStoUnity.git",`
+`"com.Manurocker95.pokemon3dstounity": "https://github.com/Manurocker95/Pokemon3DStoUnity.git",`
 
 - If you don't have git setup, download and put the entire project into your Assets Folder
 - Note that the whacky version requires net. 4.x. Remember to set it in Edit > Project Settings
@@ -27,6 +24,8 @@ Usage:
 - Place your 3DS files in `Assets/Bin3DS` that would've been created
 - Hit import again
 - Exported files and prefabs get added to  `Assets/Exported`
+- Exported files and prefabs get added to  `Assets/GLTF_Exported`
+- It's recommended to always click Refresh before importing and exporting
 
 For a step-by-step guide / more info: https://gbatemp.net/threads/tutorial-export-your-pokemon-animated-models-from-3ds-to-unity-engine-3d.532962/ 
 
@@ -36,7 +35,7 @@ If you face any issues or just looking for a community of likeminded developers:
 
 Contributions:
 -
-If you would like to contribute to this project, I would recommend going through the TODOs at the top of `PokemonImporter.cs` in the `main` branch:
+If you would like to contribute to this project, I would recommend going through the TODOs at the top of `PokemonImporter.cs` in the `main` branch of the original repository:
 https://github.com/opeious/Pokemon3DStoUnity/blob/main/Editor/PokemonImporter.cs
 
 
