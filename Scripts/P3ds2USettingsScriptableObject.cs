@@ -166,6 +166,8 @@ namespace P3DS2U
       public int StartIndex;
       [Min(0)]
       public int EndIndex;
+      [Min(0)]
+      public float ModelScale = 1;
       [Space(10)]
       public bool ImportModel;
       public bool ImportTextures;
@@ -174,6 +176,8 @@ namespace P3DS2U
       public bool ApplyMaterials;
       public bool ApplyShinyMaterials;
       public bool ImportFireMaterials;
+      public bool ExportGLB;
+      public bool ExportGLTF;
       
       public bool SkeletalAnimations;
       public AnimationImportOptions FightAnimationsToImport;
@@ -284,12 +288,12 @@ namespace P3DS2U
 
       private Dictionary<string, List<string>> ScenesDict = new Dictionary<string, List<string>> ();
 
-      public void StartImporting ()
-      {
-         ImportInProgress = true;
-         P3DS2UConfig.StartImportingBinaries (this, ScenesDict);
-         ImportInProgress = false;
-      }
+         public void StartImporting (bool _export = false)
+         {
+             ImportInProgress = true;
+             P3DS2UConfig.StartImportingBinaries (this, ScenesDict, _export);
+             ImportInProgress = false;
+         }
 
         public void SetImportPath()
         {

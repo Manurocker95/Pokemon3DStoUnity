@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CurveExtended;
+using UnityGLTF;
+
 using P3DS2U.Editor.SPICA;
 using P3DS2U.Editor.SPICA.COLLADA;
 using P3DS2U.Editor.SPICA.Commands;
@@ -12,7 +14,8 @@ using P3DS2U.Editor.SPICA.H3D.Model;
 using P3DS2U.Editor.SPICA.H3D.Model.Mesh;
 using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 /*
  *TODO: Separate the model and the container prefabs, to have the model drag-droppable in the animation previews.
@@ -26,6 +29,7 @@ namespace P3DS2U.Editor
 {
     public class PokemonImporter : EditorWindow
     {
+
         private static int _processedCount;
 
         private delegate void OnAnimationImported (AnimationClip clip);
@@ -56,8 +60,10 @@ namespace P3DS2U.Editor
            return AnimationImportOptions[_animationCount][animationName];
         }
 
-        public static void StartImportingBinaries(P3ds2USettingsScriptableObjectBase importSettings_base, Dictionary<string, List<string>> scenesDict)
+        public static void StartImportingBinaries(P3ds2USettingsScriptableObjectBase importSettings_base, Dictionary<string, List<string>> scenesDict, bool _export = false)
         {
+
+
             P3ds2USettingsScriptableObject importSettings = (P3ds2USettingsScriptableObject)importSettings_base;
             int m_currentIndex = 0;
             string ExportPath = importSettings.ExportPath;
@@ -184,18 +190,55 @@ namespace P3DS2U.Editor
                         var go = new GameObject("GeneratedUnityObject");
                         modelGo.transform.SetParent(go.transform);
                         modelGo.name = "Model";
+                        string fullName = modelName + " (Container)";
+                        go.name = fullName;
+                        var fullPathName = ExportPath + kvp.Key.Replace(".bin", "") + "/" + kvp.Key.Replace(".bin", "");
+                        var prefabPath = AssetDatabase.GenerateUniqueAssetPath(fullPathName + ".prefab");
 
-                        go.name = modelName + " (Container)";
-                        var prefabPath =
-                            AssetDatabase.GenerateUniqueAssetPath(ExportPath + kvp.Key.Replace(".bin", "") + "/" + kvp.Key.Replace(".bin", "") + ".prefab");
                         PrefabUtility.SaveAsPrefabAssetAndConnect(go, prefabPath, InteractionMode.UserAction);
 
-                        go.transform.localPosition = new Vector3
+                        go.transform.localPosition = Vector3.zero;
+                        var scale = importSettings.ImporterSettings.ModelScale;
+                        go.transform.localScale = new Vector3(scale, scale, scale);
+                        if (_export)
                         {
-                            x = Random.Range(-100f, 100f),
-                            y = 0,
-                            z = Random.Range(-100f, 100f)
-                        };
+                            var gltfPath = ExportPath + "GLTF/"+ modelName+"/";
+                            string gltfName = modelName;
+                            if (importSettings.ImporterSettings.ExportGLB)
+                            {
+                                ExportGO(true, combinedExportFolder, gltfPath, fullName, modelGo, (bool success) =>
+                                {
+                                    UnityEditor.AssetDatabase.Refresh();
+
+                                    if (!success)
+                                    {
+                                        Debug.LogError("Something went wrong exporting a glTF");
+                                    }
+                                    else
+                                    {
+                                        Debug.Log(gltfName + " was exported to " + gltfPath);
+                                    }
+                                });
+                            }
+
+                            if (importSettings.ImporterSettings.ExportGLTF)
+                            {
+                                ExportGO(false, combinedExportFolder, gltfPath, fullName, modelGo, (bool success) =>
+                                {
+                                    UnityEditor.AssetDatabase.Refresh();
+
+                                    if (!success)
+                                    {
+                                        Debug.LogError("Something went wrong exporting a glTF");
+                                    }
+                                    else
+                                    {
+                                        Debug.Log(gltfName + " was exported to " + gltfPath);
+                                    }
+                                });
+                            }
+
+                        }
                     }
                 }
                 catch (Exception e)
@@ -208,135 +251,114 @@ namespace P3DS2U.Editor
             EditorUtility.ClearProgressBar();
         }
 
-        public static void StartImportingBinaries2 (P3ds2USettingsScriptableObject importSettings, Dictionary<string, List<string>> scenesDict)
+        public static List<T> FindAssetsByTypeAtPath<T>(string path, string _assembly = "UnityEngine.", bool _hasSlashAtTheEnd = false, bool _log = false) where T : UnityEngine.Object
         {
-            int m_currentIndex = 0;
+            List<T> assets = new List<T>();
+            string[] guids = !string.IsNullOrEmpty(_assembly) ? UnityEditor.AssetDatabase.FindAssets(string.Format("t:{0}", typeof(T).ToString().Replace(_assembly, ""))) : UnityEditor.AssetDatabase.FindAssets(string.Format("t:{0}", typeof(T).ToString()));
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string assetPath = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[i]);
+                int idx = assetPath.LastIndexOf("/");
 
-            try {
-                string ExportPath = importSettings.ExportPath;
-                AnimationImportOptions.Add(importSettings.ImporterSettings.FightAnimationsToImport);
-                AnimationImportOptions.Add(importSettings.ImporterSettings.PetAnimationsToImport);
-                AnimationImportOptions.Add(importSettings.ImporterSettings.MovementAnimationsToImport);
-                _processedCount = 0;
-                for (int i = importSettings.ImporterSettings.StartIndex; i <= importSettings.ImporterSettings.EndIndex; i++)
+                if (idx < 0 || idx > assetPath.Length)
+                    continue;
+
+                string trimmedPath = assetPath.Substring(0, idx + (_hasSlashAtTheEnd ? 1 : 0));
+
+                if (trimmedPath.Equals(path))
                 {
-                    m_currentIndex = i;
-                    var kvp = scenesDict.ElementAt(i);
-                    EditorUtility.ClearProgressBar ();
-                    EditorUtility.DisplayProgressBar ("Importing", kvp.Key.Replace (".bin", ""),
-                        (float) _processedCount / scenesDict.Count);
+                    T asset = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                    if (_log)
+                        Debug.Log(trimmedPath);
 
-                    h3DScene = new H3D ();
+                    if (asset != null)
+                    {
+                        if (_log)
+                            Debug.Log("yes");
 
-                    //Add all non-animation binaries first
-                    foreach (var singleFileToBeMerged in kvp.Value) {
-                        var fileType = BinaryUtils.GetBinaryFileType (singleFileToBeMerged);
-                        if (fileType == BinaryUtils.FileType.Animation) continue;
-                        H3DDict<H3DBone> skeleton = null;
-                        if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
-                        var data = FormatIdentifier.IdentifyAndOpen (singleFileToBeMerged, skeleton);
-                        if (data != null) h3DScene.Merge (data);
-                    }
-
-                    int animFilesCount = 0;
-                    //Merge animation binaries
-                    foreach (var singleFileToBeMerged in kvp.Value) {
-                        var fileType = BinaryUtils.GetBinaryFileType (singleFileToBeMerged);
-                        if (fileType != BinaryUtils.FileType.Animation) continue;
-                        H3DDict<H3DBone> skeleton = null;
-                        if (h3DScene.Models.Count > 0) skeleton = h3DScene.Models[0].Skeleton;
-                        var data = FormatIdentifier.IdentifyAndOpen (singleFileToBeMerged, skeleton, animFilesCount);
-                        animFilesCount++;
-                        if (data != null) h3DScene.Merge (data);
-                    }
-
-                    var combinedExportFolder = ExportPath + kvp.Key.Replace (".bin", "") + "/Files/";
-                    if (!Directory.Exists (combinedExportFolder)) {
-                        Directory.CreateDirectory (combinedExportFolder);
-                    } else {
-                        Directory.Delete (ExportPath + kvp.Key.Replace (".bin", "") + "/", true);
-                        Directory.CreateDirectory (combinedExportFolder);
-                    }
-
-                    if (importSettings.ImporterSettings.ImportTextures) {
-                        GenerateTextureFiles (h3DScene, combinedExportFolder);   
-                    }
-
-                    var meshDict = new Dictionary<string, SkinnedMeshRenderer> ();
-                    if (importSettings.ImporterSettings.ImportModel) {
-                        try {
-                            meshDict = GenerateMeshInUnityScene (h3DScene, combinedExportFolder, importSettings);
-                        }
-                        catch (Exception e) {
-                            Debug.LogError (
-                                "Check your settings! Are you sure, you are using the correct input format, is each pokemon's binaries in a separate folder?\n" +
-                                e.Message + "\n" + e.StackTrace);
-                        }
-                    }
-
-                    var matDict = new Dictionary<string, Material> ();
-                    
-                    if (importSettings.ImporterSettings.ImportShinyMaterials) {
-                        matDict = GenerateShinyMaterialFiles (h3DScene, combinedExportFolder, importSettings.customShaderSettings);
-                    }
-
-                    if (importSettings.ImporterSettings.ImportMaterials) {
-                        matDict = GenerateMaterialFiles (h3DScene, combinedExportFolder, importSettings.customShaderSettings);   
-                    }
-
-                    if (importSettings.ImporterSettings.ApplyMaterials) {
-                        AddMaterialsToGeneratedMeshes (meshDict, matDict, h3DScene);   
-                    } else if (importSettings.ImporterSettings.ApplyShinyMaterials) {
-                        AddMaterialsToGeneratedMeshes (meshDict, matDict, h3DScene);
-                    }
-
-                    if (importSettings.ImporterSettings.SkeletalAnimations) {
-                        GenerateSkeletalAnimations (h3DScene, combinedExportFolder);
-                    }
-                    
-                    if (importSettings.ImporterSettings.VisibilityAnimations) {
-                        GenerateVisibilityAnimations (h3DScene, combinedExportFolder);
-                    }
-
-                    if (importSettings.ImporterSettings.MaterialAnimations) {
-                        GenerateMaterialAnimations (h3DScene, combinedExportFolder, importSettings);   
-                    }
-
-                    var modelGo = GameObject.Find ("GeneratedUnityObject");
-                    if (modelGo != null) {
-                        var modelName = kvp.Key.Replace (".bin", "");
-                        if (importSettings.ImporterSettings.SkeletalAnimations) {
-                            if (importSettings.customAnimatorSettings.baseController == null)
-                            { GenerateAnimationController(modelGo, combinedExportFolder, modelName); }
-                            else
-                            { GenerateAnimationOverrideController(modelGo, combinedExportFolder, modelName, importSettings.customAnimatorSettings); }
-                        }
-                        
-                        var go = new GameObject ("GeneratedUnityObject");
-                        modelGo.transform.SetParent (go.transform);
-                        modelGo.name = "Model";
-                        
-                        go.name = modelName + " (Container)";
-                        var prefabPath =
-                            AssetDatabase.GenerateUniqueAssetPath (ExportPath + kvp.Key.Replace (".bin", "") + "/" + kvp.Key.Replace (".bin", "") + ".prefab");
-                        PrefabUtility.SaveAsPrefabAssetAndConnect (go, prefabPath, InteractionMode.UserAction);
-
-                        go.transform.localPosition = new Vector3 {
-                            x = Random.Range (-100f, 100f),
-                            y = 0,
-                            z = Random.Range (-100f, 100f)
-                        };   
+                        assets.Add(asset);
                     }
                 }
             }
-            catch (Exception e) {
-                Debug.LogError("Index: "+ m_currentIndex);
-                Debug.LogError ("Something went horribly wrong! Hmu, I'll try to fix it.\n" + e.Message + "\n" +
-                                e.StackTrace);
+            return assets;
+        }
+
+        public static int GetWordIndexInString(string strSource, string word)
+        {
+            int ret = -1;
+            if (strSource.Contains(word))
+            {
+                ret = strSource.IndexOf(word, 0) + word.Length;
+            }
+            return ret;
+        }
+
+        public static string GetProjectAssetsFolderFromPath(string path)
+        {
+            string assetsStr = "Assets";
+
+            if (!path.Contains(assetsStr))
+                return path;
+
+            int index = GetWordIndexInString(path, assetsStr) - assetsStr.Length;
+            return path.Substring(index, path.Length - index);
+        }
+
+        static void ExportGO(bool binary, string combinedFolder, string exportPath,  string name, GameObject gameObject, UnityAction<bool> _callback)
+        {
+            if (!System.IO.Directory.Exists(exportPath))
+            {
+                System.IO.Directory.CreateDirectory(exportPath);
+            }
+           
+            Export(binary, exportPath, name, new GameObject[] { gameObject }, _callback);
+        }
+
+        static void Export(bool binary, string exportPath, string name, GameObject[] gameObjects, UnityAction<bool> _callback)
+        {
+            var extension = binary ? "glb" : "gltf";
+
+            var settings = GLTFSettings.GetOrCreateSettings();
+            var exportOptions = new ExportOptions { TexturePathRetriever = RetrieveTexturePath };
+            var transforms = gameObjects.Select(x => (x as GameObject).transform).ToArray();
+            var exporter = new GLTFSceneExporter(transforms, exportOptions);
+
+            var invokedByShortcut = Event.current?.type == EventType.KeyDown;
+            var pathToReplace = "Assets/";
+
+            var path =Application.dataPath+"/"+ exportPath.Substring(pathToReplace.Length, exportPath.Length-(pathToReplace.Length));
+     
+            if (!string.IsNullOrEmpty(path))
+            {
+                var resultFile = GLTFSceneExporter.GetFileName(path, name, extension);
+                settings.SaveFolderPath = path;
+                if (binary)
+                    exporter.SaveGLB(path, name);
+                else
+                    exporter.SaveGLTFandBin(path, name);
+
+                Debug.Log("Exported to " + resultFile);
+                EditorUtility.RevealInFinder(resultFile);
+                _callback?.Invoke(true);
+                return;
             }
 
-            EditorUtility.ClearProgressBar();
+            _callback?.Invoke(false);
         }
+
+        public static string RetrieveTexturePath(UnityEngine.Texture texture)
+        {
+            var path = AssetDatabase.GetAssetPath(texture);
+            // texture is a subasset
+            if (AssetDatabase.GetMainAssetTypeAtPath(path) != typeof(Texture2D))
+            {
+                var ext = System.IO.Path.GetExtension(path);
+                if (string.IsNullOrWhiteSpace(ext)) return texture.name + ".png";
+                path = path.Replace(ext, "-" + texture.name + ext);
+            }
+            return path;
+        }
+
 
         private static void GenerateAnimationController(GameObject modelGo, string combinedExportFolder,
             string modelName)

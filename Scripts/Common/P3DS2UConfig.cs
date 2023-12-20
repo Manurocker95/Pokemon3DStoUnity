@@ -13,19 +13,23 @@ namespace P3DS2U
 
         public static Func<int, string, bool> NeedToImportFunc;
         public static Func<bool> RenameGeneratedAnimationFilesFunc;
-        public static UnityAction<P3ds2USettingsScriptableObjectBase, Dictionary<string, List<string>>> StartImportingBinariesEvent;
+        public static UnityAction<P3ds2USettingsScriptableObjectBase, Dictionary<string, List<string>>, bool> StartImportingBinariesEvent;
 
         public static bool GetRenameGeneratedAnimationFiles() => RenameGeneratedAnimationFilesFunc.Invoke();
         public static bool NeedToImportBasedOnAnimationImportOptions(int _animFilesCount, string _animationName) => NeedToImportFunc.Invoke(_animFilesCount, _animationName);
-        public static void StartImportingBinaries(P3ds2USettingsScriptableObjectBase settings, Dictionary<string, List<string>> sceneDict) => StartImportingBinariesEvent.Invoke(settings, sceneDict);
+        public static void StartImportingBinaries(P3ds2USettingsScriptableObjectBase settings, Dictionary<string, List<string>> sceneDict, bool _export = false) => StartImportingBinariesEvent.Invoke(settings, sceneDict, _export);
         public static string SaveFolderPanel(string title, string defaultPath, string folderName)
         {
-            var items = SFB.StandaloneFileBrowser.OpenFolderPanel(title, defaultPath, false);
+#if USE_VP_CORE && USE_VP_SFB
+            var items = VirtualPhenix.SFB.VP_StandaloneFileBrowser.OpenFolderPanel(title, defaultPath, false);
 
             if (items == null || items.Count == 0 || string.IsNullOrEmpty(items[0].Name))
                 return "";
 
             return items[0].Name;
+#else
+            return defaultPath;
+#endif
         }
     }
 }

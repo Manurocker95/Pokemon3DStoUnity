@@ -10,6 +10,8 @@ namespace P3DS2U.Editor
         private static Pokemon3DSToUnityEditorWindow instance;
         private static P3ds2USettingsScriptableObject _settings;
 
+        public static Pokemon3DSToUnityEditorWindow Instance => instance;
+
         public static P3ds2USettingsScriptableObject settings {
             get => _settings;
             set {
@@ -53,5 +55,7 @@ namespace P3DS2U.Editor
                 EditorGUILayout.LabelField ("Couldn't find settings, Generate a new settings file by: 3DStoUnity -> Find Settings Object", s);
             }
         }
+
+
     }
 }

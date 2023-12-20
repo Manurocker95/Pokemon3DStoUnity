@@ -1,0 +1,37 @@
+{
+    "name": "UnityGLTFTests",
+    "rootNamespace": "",
+    "references": [
+        "UnityGLTFScripts",
+        "UnityGLTFEditor",
+        "GLTFSerialization",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "GLTFSerialization.dll",
+        "Newtonsoft.Json.dll",
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "Select...",
+            "expression": "0.0.0",
+            "define": "HAVE_ASSET_GENERATOR"
+        },
+        {
+            "name": "com.unity.modules.unitywebrequest",
+            "expression": "0.0.0",
+            "define": "UNITY_WEBREQUEST"
+        }
+    ],
+    "noEngineReferences": false
+}

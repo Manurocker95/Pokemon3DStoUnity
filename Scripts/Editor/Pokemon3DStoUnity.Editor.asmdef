@@ -4,7 +4,8 @@
     "references": [
         "Pokemon3DStoUnity",
         "Pokemon3DStoUnity.Editor.SPICA",
-        "Pokemon3DS2Unity.Common"
+        "Pokemon3DS2Unity.Common",
+        "UnityGLTFScripts"
     ],
     "includePlatforms": [
         "Editor"

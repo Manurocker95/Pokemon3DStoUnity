@@ -64,10 +64,16 @@ namespace P3DS2U.Editor
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.BeginScrollView(Vector2.zero, GUILayout.Width(400), GUILayout.Height(140));
 
+                EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Import", GUILayout.Width(100), GUILayout.Height(50)))
                 {
                     settingsTarget.StartImporting();
                 }
+                if (GUILayout.Button("Import & Export", GUILayout.Width(200), GUILayout.Height(50)))
+                {
+                    settingsTarget.StartImporting(true);
+                }
+                EditorGUILayout.EndHorizontal();
                 if (GUILayout.Button("Refresh", GUILayout.Width(100), GUILayout.Height(50)))
                 {
                     if (P3DS2UConfig.NeedToImportFunc == null)
@@ -104,6 +110,7 @@ namespace P3DS2U.Editor
                         wti.RenameGeneratedAnimationFiles = false;
                         wti.VisibilityAnimations = false;
                         wti.ImportFireMaterials = false;
+                      
                     }
 
                     if (!wti.ImportTextures)
