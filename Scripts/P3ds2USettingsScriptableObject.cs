@@ -218,7 +218,7 @@ namespace P3DS2U
         public string ImportPath { get { return ImporterSettings.ImportPath; } }
         public bool GetRenameGeneratedAnimationFiles() { return ImporterSettings.RenameGeneratedAnimationFiles; }
 
-        public string PackageVersion => string.IsNullOrEmpty(packageVersion) ? "2.5.0" : packageVersion;
+        public string PackageVersion => string.IsNullOrEmpty(packageVersion) ? "2.5.2" : packageVersion;
 
         [Serializable]
         public class PackageJsonObject
@@ -250,7 +250,7 @@ namespace P3DS2U
             packageVersion = packageJsonObject.version;
          }
          catch (Exception) {
-                packageVersion = "2.5.0"; 
+                packageVersion = "2.5.2"; 
             //ignored
          }
             Instance = this;

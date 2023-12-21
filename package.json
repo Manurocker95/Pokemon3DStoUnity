@@ -1,7 +1,7 @@
 {
   "name": "com.Manurocker95.pokemon3dstounity",
   "displayName": "Pokemon 3DS to Unity",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "unity": "2021.3",
   "description": "Directly import Pokemon Binary files into Unity and export them as GLTF or GLB",
   "keywords": [
