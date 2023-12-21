@@ -207,7 +207,7 @@ namespace P3DS2U.Editor
                             string gltfName = modelName;
                             if (importSettings.ImporterSettings.ExportGLB)
                             {
-                                ExportGO(true, combinedExportFolder, gltfPath, fullName, modelGo, (bool success) =>
+                                ExportGO(true, combinedExportFolder, gltfPath, gltfName, modelGo, (bool success) =>
                                 {
                                     UnityEditor.AssetDatabase.Refresh();
 
@@ -220,7 +220,7 @@ namespace P3DS2U.Editor
 
                             if (importSettings.ImporterSettings.ExportGLTF)
                             {
-                                ExportGO(false, combinedExportFolder, gltfPath, fullName, modelGo, (bool success) =>
+                                ExportGO(false, combinedExportFolder, gltfPath, gltfName, modelGo, (bool success) =>
                                 {
                                     UnityEditor.AssetDatabase.Refresh();
 
