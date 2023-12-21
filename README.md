@@ -3,18 +3,16 @@
 Compatibility:
 - https://docs.google.com/spreadsheets/d/1-3NI6vUMltge9d57bbdNkJ9jBEYdKAf59i2BfbgTiGs/edit#gid=1937181896
 
-Note:
-This is a fork of Opeious work, so this is meant only for adding functionalities. 
-The whack runtime version requires NET 4.x so NET Framework must be selected under Edit > Project Settings > Player 
+Note these important things:
+- This is a fork of Opeious work, so this is meant only for adding functionalities. 
+- The whack runtime version requires NET 4.x so NET Framework must be selected under Edit > Project Settings > Player. The reason is the usage of Reflection for future standalone import and export.
+- This plugin mainly works with the Universal Render Pipeline 12+ at the moment. You can use it for Built-in with 2021.2 and above but you need to install Shader Graph through PackageManager. For HDRP, add that target to every 3DS2Unity shader. 
+- Exported GLTF will need you to make the custom shaders and material configuration in Blender, Unreal... They won't work out of the box outside Unity but you can now export them in batch.
 
 Installation:
--
-- Note: This plugin only works with the Universal Render Pipeline at the moment.
-- If you have a git account, add this project as a dependency in `Packages/manifest.json` in the root your your project
-`"com.Manurocker95.pokemon3dstounity": "https://github.com/Manurocker95/Pokemon3DStoUnity.git",`
 
-- If you don't have git setup, download and put the entire project into your Assets Folder
-- Note that the whacky version requires net. 4.x. Remember to set it in Edit > Project Settings
+- Clone with git or download and put the entire project into your Assets Folder, under Pokemon3DS2Unity folder (Assets/Pokemon3DS2Unity/).
+- In Releases section you can find a .zip with the .unitypackage inside.
 
 Usage:
 -
@@ -23,9 +21,8 @@ Usage:
 - From the top bar click 3DStoUnity and hit import
 - Place your 3DS files in `Assets/Bin3DS` that would've been created
 - Hit import again
-- Exported files and prefabs get added to  `Assets/Exported`
-- Exported files and prefabs get added to  `Assets/GLTF_Exported`
-- It's recommended to always click Refresh before importing and exporting
+- Exported files and prefabs get added to  `Assets/Exported` by default. You can set a custom folder inside your Assets folder by clicking on `[...]` button.
+- Exported files and prefabs get added to  `Assets/GLTF_Exported` by default. You can set a custom folder inside your Assets folder by clicking on `[...]` button.
 
 For a step-by-step guide / more info: https://gbatemp.net/threads/tutorial-export-your-pokemon-animated-models-from-3ds-to-unity-engine-3d.532962/ 
 
@@ -71,7 +68,8 @@ Updating:
 - Unity package manager doesn't currently support version of git packages, for now just remove the project as a dependency and add it again
 
 ChangeLog:
-- 2.2-2.5: support for automatized exporter with UnityGLTF dev branch and some refactorization. NET 4.x is now mandatory as I use reflection for future runtime app.
+- v2.3-2.5: support for automatized exporter with UnityGLTF dev branch and some refactorization. NET 4.x is now mandatory as I use reflection for future runtime app.
+- v2.2: Skip null data (E.g Altaria)
 - v2.1: Ability to override animation controller during import, List<uint> fix (2019.1 and below)
 - v2.0: Added option to generate and apply shiny materials
 - v1.9: Fix (Changed parser to allow reading of Binaries that are set to read only.)

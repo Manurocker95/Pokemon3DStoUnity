@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace P3DS2U.Editor
 {
@@ -81,28 +82,16 @@ namespace P3DS2U.Editor
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Import", GUILayout.Width(100), GUILayout.Height(50)))
                 {
-                    CheckFolders(wti);
-                    settingsTarget.StartImporting();
+                    RefreshTab(settingsTarget, wti, ()=>settingsTarget.StartImporting());
                 }
                 if (GUILayout.Button("Import & Export as GLTF", GUILayout.Width(200), GUILayout.Height(50)))
                 {
-                    CheckFolders(wti);
-                    settingsTarget.StartImporting(true);
+                    RefreshTab(settingsTarget, wti, ()=> settingsTarget.StartImporting(true));
                 }
                 EditorGUILayout.EndHorizontal();
                 if (GUILayout.Button("Refresh", GUILayout.Width(100), GUILayout.Height(50)))
                 {
-                    CheckFolders(wti);
-                    if (P3DS2UConfig.NeedToImportFunc == null)
-                    {
-                        P3DS2UConfig.NeedToImportFunc = PokemonImporter.NeedToImportAnimation;
-                    }
-
-                    if (P3DS2UConfig.StartImportingBinariesEvent == null)
-                    {
-                        P3DS2UConfig.StartImportingBinariesEvent = PokemonImporter.StartImportingBinaries;
-                    }
-                    settingsTarget.RegeneratePreview();
+                    RefreshTab(settingsTarget, wti);
                 }
                 GUILayout.Label("If you are not sure what settings to use, try the defaults!", GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndScrollView();
@@ -179,6 +168,22 @@ namespace P3DS2U.Editor
             GUILayout.ExpandWidth(true);
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void RefreshTab(P3ds2USettingsScriptableObject settingsTarget, WhatToImport wti, UnityAction _callback = null)
+        {
+            CheckFolders(wti);
+            if (P3DS2UConfig.NeedToImportFunc == null)
+            {
+                P3DS2UConfig.NeedToImportFunc = PokemonImporter.NeedToImportAnimation;
+            }
+
+            if (P3DS2UConfig.StartImportingBinariesEvent == null)
+            {
+                P3DS2UConfig.StartImportingBinariesEvent = PokemonImporter.StartImportingBinaries;
+            }
+            settingsTarget.RegeneratePreview();
+            _callback?.Invoke();
         }
 
         private void CheckFolders(WhatToImport wti)
