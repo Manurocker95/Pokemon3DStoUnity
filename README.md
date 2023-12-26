@@ -5,7 +5,7 @@ Compatibility:
 
 Note these important things:
 - This is a fork of Opeious work, so this is meant only for adding functionalities. 
-- The whack runtime version requires NET 4.x so NET Framework must be selected under Edit > Project Settings > Player. The reason is the usage of Reflection for future standalone import and export.
+- This whacky version requires NET 4.x so NET Framework must be selected under Player Settings. The reason is the usage of Reflection for future standalone import and export. In order to activate it, go to Edit > Project Settings > Player. Go down to "Other Settings" and scroll down to "Configuration". Change API Compatibility level from "NET Standard 2.1" to "NET Framework" or "NET 4.x" depending on your Unity version. Let it compile. 
 - This plugin mainly works with the Universal Render Pipeline 12+ at the moment. You can use it for Built-in with 2021.2 and above but you need to install Shader Graph through PackageManager. For HDRP, add that target to every 3DS2Unity shader. 
 - Exported GLTF/GLB will need you to make the custom shaders and material configuration in Blender, Unreal... They won't work out of the box outside Unity but you can now export them in batch.
 - Exporting as GLTF creates the .bin required to handle the buffers. This might cause Unity to lock them until you close the editor and might not let you to delete them, so use GLB as your main export output.
