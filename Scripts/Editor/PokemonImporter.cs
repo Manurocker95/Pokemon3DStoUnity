@@ -1028,7 +1028,18 @@ namespace P3DS2U.Editor
                     newMaterial = AssetDatabase.LoadAssetAtPath<Material> (filePath);
                     newMaterial.shader = shaderToApply;
                 } else {
-                    newMaterial = new Material (shaderToApply);
+                    try
+                    {
+                        newMaterial = new Material(shaderToApply);
+                    }
+                    catch (System.Exception e)
+                    {
+                        var standardShader = Shader.Find("Standard");
+                        if (shaderToApply == null)
+                            shaderToApply = standardShader;
+
+                        newMaterial = new Material(standardShader);
+                    }
                 }
 
                 newMaterial.shaderKeywords = new[]
