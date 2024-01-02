@@ -179,7 +179,9 @@ namespace P3DS2U
       public bool ExportGLB;
       public bool ExportGLTF;
       public bool OpenFolderAfterGLTFExport;
-      
+
+      public bool InstantiateModel;
+
       public bool SkeletalAnimations;
       public AnimationImportOptions FightAnimationsToImport;
       public AnimationImportOptions PetAnimationsToImport;
@@ -283,7 +285,8 @@ namespace P3DS2U
                 ExportGLTFPath = P3DS2UConfig.GLTFExportPath,
                 ExportGLB = true,
                 ExportGLTF = false,
-                OpenFolderAfterGLTFExport = false
+                OpenFolderAfterGLTFExport = false,
+                InstantiateModel = true
             };
             foreach (string animationName in AnimationNaming.animationNames["Fight"])
             {

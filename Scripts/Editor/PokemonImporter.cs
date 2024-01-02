@@ -194,12 +194,12 @@ namespace P3DS2U.Editor
                         go.name = fullName;
                         var fullPathName = ExportPath + kvp.Key.Replace(".bin", "") + "/" + kvp.Key.Replace(".bin", "");
                         var prefabPath = AssetDatabase.GenerateUniqueAssetPath(fullPathName + ".prefab");
-
-                        PrefabUtility.SaveAsPrefabAssetAndConnect(go, prefabPath, InteractionMode.UserAction);
-
                         go.transform.localPosition = Vector3.zero;
                         var scale = importSettings.ImporterSettings.ModelScale;
                         go.transform.localScale = new Vector3(scale, scale, scale);
+
+                        var prefab = PrefabUtility.SaveAsPrefabAssetAndConnect(go, prefabPath, InteractionMode.UserAction);
+
                         if (_export)
                         {
                             string GLTFExportPath = string.IsNullOrEmpty(importSettings.GLTFExportPath) ? ExportPath : importSettings.GLTFExportPath;
@@ -215,10 +215,33 @@ namespace P3DS2U.Editor
                                     {
                                         Debug.LogError("Something went wrong exporting"+ gltfName+" as glb at "+ gltfPath);
                                     }
+
+                                    if (importSettings.ImporterSettings.ExportGLTF)
+                                    {
+                                        ExportGO(false, combinedExportFolder, gltfPath, gltfName, modelGo, (bool success) =>
+                                        {
+                                            UnityEditor.AssetDatabase.Refresh();
+
+                                            if (!success)
+                                            {
+                                                Debug.LogError("Something went wrong exporting" + gltfName + " as glTF at " + gltfPath);
+                                            }
+
+                                            if (!importSettings.ImporterSettings.InstantiateModel)
+                                            {
+                                                DestroyImmediate(go);
+                                            }
+                                        }, importSettings.ImporterSettings.OpenFolderAfterGLTFExport);
+                                    }
+
+                                    else if (!importSettings.ImporterSettings.InstantiateModel)
+                                    {
+                                        DestroyImmediate(go);
+                                    }
                                 }, importSettings.ImporterSettings.OpenFolderAfterGLTFExport);
                             }
 
-                            if (importSettings.ImporterSettings.ExportGLTF)
+                            else if (importSettings.ImporterSettings.ExportGLTF)
                             {
                                 ExportGO(false, combinedExportFolder, gltfPath, gltfName, modelGo, (bool success) =>
                                 {
@@ -228,10 +251,18 @@ namespace P3DS2U.Editor
                                     {
                                         Debug.LogError("Something went wrong exporting" + gltfName + " as glTF at " + gltfPath);
                                     }
+
+                                    if (!importSettings.ImporterSettings.InstantiateModel)
+                                    {
+                                        DestroyImmediate(go);
+                                    }
                                 }, importSettings.ImporterSettings.OpenFolderAfterGLTFExport);
                             }
 
                         }
+
+         
+
                     }
                 }
                 catch (Exception e)
